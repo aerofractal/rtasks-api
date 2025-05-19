@@ -13,7 +13,7 @@ RUN apt-get update -qq && \
 COPY --link bun.lockb package.json ./
 RUN bun install --frozen-lockfile --production
 
-COPY --link frontend/ ./
+COPY --link frontend/ ./frontend
 RUN cd frontend && bun install --froen-lockfile --production
 
 COPY --link . .
