@@ -1,42 +1,48 @@
-name: Fly Deploy
+name: Deploy to Fly.io
+
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+
 jobs:
   deploy:
-    name: Deploy app
     runs-on: ubuntu-latest
-    concurrency: deploy-group
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
 
-      # Official Bun setup action (replace version as needed)
+    steps:
+      - name: Checkout code (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
       - name: Set up Bun
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: '1.1.27' # match your local version
+          bun-version: 1.1.13
 
-      # Install dependencies in frontend directory
-      - name: Install dependencies
+      - name: Install backend dependencies
+        run: bun install
+
+      # If your frontend needs to be built separately:
+      - name: Install frontend dependencies
         run: bun install
         working-directory: ./frontend
 
-      # Debug: List files to confirm vite.config.ts is present
-      - name: List frontend files
-        run: ls -l ./frontend
-
-      # Build frontend
       - name: Build frontend
         run: bun run build
         working-directory: ./frontend
 
-      # Fly CLI setup
-      - uses: superfly/flyctl-actions/setup-flyctl@master
+      # If your backend build depends on the frontend output, add a step to copy/move files as needed
 
-      # Deploy (if you want to deploy the built project)
-      - run: flyctl deploy --remote-only
+      - name: Build backend
+        run: bun run build
+
+      # Optionally run tests
+      # - name: Run tests
+      #   run: bun test
+
+      - name: Deploy to Fly.io
+        uses: superfly/flyctl-actions@v1
+        with:
+          args: "deploy --remote-only"
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
