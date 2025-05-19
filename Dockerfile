@@ -13,14 +13,13 @@ RUN apt-get update -qq && \
 COPY --link bun.lockb package.json ./
 RUN bun install --frozen-lockfile --production
 
-COPY --link frontend/bun.lockb ./frontend
-COPY --link frontend/package.json ./frontend
-RUN cd frontend && bun install --froen-lockfile --production
-
 COPY --link . .
-COPY --link frontend/ ./frontend
 
 WORKDIR /app/frontend
+COPY --link frontend/bun.lockb frontend/package.json ./
+RUN bun install --frozen-lockfile --production
+COPY --link ./frontend .
+
 RUN bun run build
 
 RUN find . -mindepth 1 ! -regex '^./dist\(/.*\)?' -delete
