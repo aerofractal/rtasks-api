@@ -33,9 +33,10 @@ export const tasksRoute = new Hono()
             .insert(tasksTable)
             .values(validatedTask)
             .returning()
+            .then((res) => res[0])
 
         c.status(201)
-        return c.json({ task: result[0] })
+        return c.json(result)
     })
     .get('/total-tasks', getUser, async (c) => {
         const user = c.var.user
