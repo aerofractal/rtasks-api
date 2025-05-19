@@ -13,8 +13,6 @@ RUN apt-get update -qq && \
 COPY --link bun.lockb package.json ./
 RUN bun install --frozen-lockfile --production
 
-RUN git clone https://github.com/aerofractal/rtasks.git
-
 COPY --link frontend/bun.lockb frontend/package.json ./frontend/
 RUN cd frontend && bun install --froen-lockfile --production
 
