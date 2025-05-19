@@ -15,9 +15,9 @@ jobs:
           submodules: recursive
 
       - name: Set up Bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.1.13
+          bun-version: 1.1.27
 
       - name: Install backend dependencies
         run: bun install
