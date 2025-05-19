@@ -1,8 +1,46 @@
+<img src="https://github.com/user-attachments/assets/ba8118fb-8718-4abf-b112-8bf452328cf6" alt="favicon-light" width="100"/>
+
 # rTasks
 
 This is a small tasks app with a SvelteKit frontend, and a Hono/TS backend.
 
+### Prerequisites
+This application uses Drizzle ORM, set up to interface with a hosted SQLite database on Turso.
+You must have your own Turso instance set up, and have access to your:
+```bash
+$TURSO_DATABASE_URL
+
+and
+
+$TURSO_AUTH_TOKEN
+```
+environment variables.
+
+This application also uses Kinde as it's Hosted Auth provider. You must set up a Kinde instance, and pull down all of your Kinde environment variables, as listed below:
+```bash
+$KINDE_CLIENT_ID
+$KINDE_CLIENT_SECRET
+$KINDE_SITE_URL
+$KINDE_LOGOUT_REDIRECT_URI
+$KINDE_DOMAIN
+$KINDE_REDIRECT_URI
+```
+
 ## Running for Development
+Install node_modules:
+```bash
+$ bun install
+
+and
+
+./frontend $ bun install
+```
+
+Build the frontend app (for fallback):
+```bash
+./frontend $ bun run build
+```
+
 Both the backend server, AND the frontend Vite server must be running at the same time.
 ```bash
 $ bun run dev
@@ -12,6 +50,7 @@ and
 ./frontend $ bun run dev
 ```
 This is required as you cannot make unauthenticated requests directly to the backend server on :3000, so you need to use the frontend to log in first.
+Requests to /api are also routed through to the backend server by the frontend, using Vite Proxy.
 
 ## Endpoints
 ### Tasks Routes
@@ -88,6 +127,8 @@ $ docker run -d -p 3000:3000 -e KINDE_ISSUER_URL='$KINDE_ISSUER_URL' \
 -e KINDE_LOGOUT_REDIRECT_URI='$KINDE_LOGOUT_REDIRECT_URI' \
 -e KINDE_DOMAIN='$KINDE_DOMAIN' \
 -e KINDE_REDIRECT_URI='$KINDE_REDIRECT_URI' \
+-e TURSO_DATABASE_URL='$TURSO_DATABASE_URL' \
+-e TURSO_AUTH_TOKEN='$TURSO_AUTH_TOKEN' \
 --name rtasks \
 $YOUR_IMAGE_TAG
 ```
